@@ -31,6 +31,11 @@ from math import sqrt, cos, sin, radians
 import numpy as np
 from matplotlib import colors
 import warnings
+import random
+from matplotlib.patches import Arc
+import argparse
+import json
+import os
 
 
 ## DeprecationWarnings from shapely are disabled
@@ -853,7 +858,6 @@ def _petal_spine_dyad(ax, dyad, dyad_score, color, emotion_names, angle, font, f
     
     
     ## Drawing the two-colored circular arc over dyads
-    from matplotlib.patches import Arc
     
     H = 3.2
     
@@ -1165,7 +1169,6 @@ def _check_scores_kind(tags):
 def random_flower():
     """ Draws a Plutchik's flower with random scores """
     
-    import random
     
     emo = {'joy': random.uniform(0, 1),
            'trust': random.uniform(0,1),
@@ -1175,8 +1178,7 @@ def random_flower():
            'disgust': random.uniform(0,1),
            'anger': random.uniform(0,1),
            'anticipation': random.uniform(0,1)}
-    
-    plutchik(emo)
+    return plutchik(emo)
     
 def plutchik(scores,
              ax = None, 
@@ -1349,4 +1351,57 @@ def plutchik(scores,
     if title:
         ax.set_title(title, fontfamily = font, fontsize = title_size, fontweight = 'bold', pad = 20)
         
-    return ax
+    return fig, ax
+
+
+if __name__ == "__main__":
+    #import matplotlib
+    #matplotlib.use('Agg')
+    #fig, ax = random_flower()
+    parser = argparse.ArgumentParser(description="Draw Plutchik's flower from emotion/dyad scores in a JSON file or via command line arguments.")
+
+    parser.add_argument('-i', '--input', help='Input JSON file with emotion/dyad scores')
+    parser.add_argument('-o', '--output', required=False, default="plutchik_flower.png", help='Output image file name')
+    parser.add_argument('-f', '--force_remove', default=False, help='To overwrite existing output file', action='store_true')
+
+    # Optional dyad values as command line arguments (all default to None)
+    dyad_names = [
+        "joy", "trust", "fear", "surprise",
+        "sadness", "disgust", "anger", "anticipation",
+    ]
+    for dyad in dyad_names:
+        parser.add_argument(f'--{dyad}', type=float, help=f'Score for dyad {dyad} (0-1)', required=False)
+
+    args = parser.parse_args()
+    # Check if all dyad arguments are None and no input file is provided
+    if all(getattr(args, dyad) is None for dyad in dyad_names):
+        fig, ax = random_flower()
+        fig.savefig("random_flower.png")
+        print("No arguments provided. A random flower has been saved as 'random_flower.png'.")
+        exit()
+    # Load scores from file if given, else from dyad arguments
+    if args.input:
+        with open(args.input, 'r') as f:
+            scores = json.load(f)
+    else:
+        # Collect dyad values from args if provided
+        scores = {}
+        for dyad in dyad_names:
+            val = getattr(args, dyad)
+            if val is not None:
+                scores[dyad] = val
+        if not scores:
+            raise ValueError("No input file provided and no dyad values specified.")
+
+    fig, ax = plutchik(scores)
+    if os.path.exists(args.output):
+        if args.force_remove:
+            os.remove(args.output)
+        else:
+            answer = input(f"Output file {args.output} already exists. Overwrite? [y/N]: ").strip().lower()
+            if answer == "y":
+                os.remove(args.output)
+            else:
+                raise FileExistsError(f"Output file {args.output} already exists. Use --force_remove to overwrite it.")
+    fig.savefig(args.output)
+    print("Done. Flower saved to", args.output)

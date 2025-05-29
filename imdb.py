@@ -94,16 +94,21 @@ if __name__ == '__main__':
     imdb_scores_20 = get_emotions_imdb(imdb_df, genres20)
     
     # PLOT 1: top 20 genres, 4 x 5 
-    fig, ax = plt.subplots(nrows = 4, ncols = 5, figsize = (8*5, 8*4))
+    fig, ax = plt.subplots(nrows=4, ncols=5, figsize=(8*5, 8*4))
+    ax = ax.flatten()  # Flatten for easier indexing
 
-    i = 0
-    for row in range(4):
-        for col in range(5):
-            genre = list(imdb_scores_20.keys())[i]
-            plutchik(imdb_scores_20[genre], ax = ax[row][col], show_coordinates = False)   
-            ax[row][col].set_title(genre, size = 28)
-            i += 1
-            
+    plotted = 0
+    for genre, scores in imdb_scores_20.items():
+        # Skip if all scores are zero or NaN
+        if not any(np.nan_to_num(list(scores.values()))):
+            print(f"Skipping genre '{genre}' due to empty emotion scores.")
+            continue
+        if plotted >= len(ax):
+            break
+        plutchik(scores, ax=ax[plotted], show_coordinates=False)
+        ax[plotted].set_title(genre, size=28)
+        plotted += 1
+
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.savefig('imdb_full.png')
     

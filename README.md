@@ -4,6 +4,8 @@ Python visualisation for Plutchik annotated corpora.
 
 PyPlutchik is a module for visualizing the emotional fingerprint of corpora and text annotated with the [Plutchik's model of emotions](https://en.wikipedia.org/wiki/Robert_Plutchik).
 
+**Note:** This version has been modified from the original for research purposes, to be compiled 
+
 If you use it, please cite
 ```
 Semeraro A, Vilella S, Ruffo G (2021) 
@@ -25,6 +27,7 @@ Installation with conda:
 conda install pyplutchik
 ```
 
+Need python version 3.8 or at most latest compatible across each library in the requirements (tested working on python 3.8.20)
 
 ### Usage
 ```python
@@ -32,7 +35,7 @@ from pyplutchik import plutchik
 
 emotions = {'joy': 0.6,
             'trust': 0.4,
-            'fear': 0.1,
+            'calmness': 0.1,
             'surprise': 0.7,
             'sadness': 0.1,
             'disgust': 0.5,

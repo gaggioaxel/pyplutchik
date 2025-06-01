@@ -73,7 +73,7 @@ def emo_params(emotion):
     ----------
     *emotion*:
         Emotion's name. Possible values: 
-        ['joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']
+        ['joy', 'trust', 'calmness', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']
     
     
     Returns:
@@ -97,7 +97,7 @@ def emo_params(emotion):
     elif emotion == 'trust':
         color = 'olivedrab'
         angle = -45
-    elif emotion == 'fear':
+    elif emotion == 'calmness':
         color = 'forestgreen'
         angle = -90
     elif emotion == 'surprise':
@@ -117,7 +117,7 @@ def emo_params(emotion):
         angle = -315
     else:
         raise Exception("""Bad input: {} is not an accepted emotion.
-                        Must be one of 'joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation'""".format(emotion))
+                        Must be one of 'joy', 'trust', 'calmness', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation'""".format(emotion))
     return color, angle, 0
 
 
@@ -1172,7 +1172,7 @@ def random_flower():
     
     emo = {'joy': random.uniform(0, 1),
            'trust': random.uniform(0,1),
-           'fear': random.uniform(0,1),
+           'calmness': random.uniform(0,1),
            'surprise': random.uniform(0,1),
            'sadness': random.uniform(0,1),
            'disgust': random.uniform(0,1),
@@ -1361,14 +1361,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Draw Plutchik's flower from emotion/dyad scores in a JSON file or via command line arguments.")
 
     parser.add_argument('-i', '--input', help='Input JSON file with emotion/dyad scores')
-    parser.add_argument('-o', '--output', required=False, default="plutchik_flower.png", help='Output image file name')
     parser.add_argument('-f', '--force_remove', default=False, help='To overwrite existing output file', action='store_true')
+    parser.add_argument('-o', '--output', required=False, default="plutchik_flower.png", help='Output image file name')
 
     # Optional dyad values as command line arguments (all default to None)
     dyad_names = [
-        "joy", "trust", "fear", "surprise",
-        "sadness", "disgust", "anger", "anticipation",
+        "calmness", "joy", "sadness", "anger",
     ]
+
     for dyad in dyad_names:
         parser.add_argument(f'--{dyad}', type=float, help=f'Score for dyad {dyad} (0-1)', required=False)
 

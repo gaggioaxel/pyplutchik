@@ -1,3 +1,4 @@
 imdb/**
 dist/**
 build/**
+**/**/*.spec

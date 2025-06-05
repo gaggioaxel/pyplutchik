@@ -1377,6 +1377,7 @@ if __name__ == "__main__":
     # Check if all dyad arguments are None and no input file is provided
     if all(getattr(args, dyad) is None for dyad in dyad_names):
         fig, ax = random_flower()
+        fig.savefig("random_flower.png")
         print("No arguments provided. A random flower has been saved as 'random_flower.png'.")
         sys.exit(0)
         

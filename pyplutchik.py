@@ -36,6 +36,7 @@ from matplotlib.patches import Arc
 import argparse
 import json
 import os
+import sys
 
 
 ## DeprecationWarnings from shapely are disabled
@@ -1376,9 +1377,9 @@ if __name__ == "__main__":
     # Check if all dyad arguments are None and no input file is provided
     if all(getattr(args, dyad) is None for dyad in dyad_names):
         fig, ax = random_flower()
-        fig.savefig("random_flower.png")
         print("No arguments provided. A random flower has been saved as 'random_flower.png'.")
-        exit()
+        sys.exit(0)
+        
     # Load scores from file if given, else from dyad arguments
     if args.input:
         with open(args.input, 'r') as f:
